@@ -40,13 +40,23 @@ TreeElementOverridesBase::TreeElementOverridesBase(TreeElement &legacy_te, ID &i
     : AbstractTreeElement(legacy_te), id_(id)
 {
   BLI_assert(legacy_te.store_elem->type == TSE_LIBRARY_OVERRIDE_BASE);
-  legacy_te.name = IFACE_("Library Overrides");
+  if (legacy_te.parent != nullptr && legacy_te.parent->store_elem->type == TSE_SOME_ID)
+
+  {
+    legacy_te.name = IFACE_("Library Overrides");
+  }
+  else {
+    legacy_te.name = id.name + 2;
+  }
 }
 
 void TreeElementOverridesBase::expand(SpaceOutliner &space_outliner) const
 {
   BLI_assert(id_.override_library != nullptr);
 
+  const bool show_system_overrides = (SUPPORT_FILTER_OUTLINER(&space_outliner) &&
+                                      (space_outliner.filter & SO_FILTER_SHOW_SYSTEM_OVERRIDES) !=
+                                          0);
   PointerRNA idpoin;
   RNA_id_pointer_create(&id_, &idpoin);
 
@@ -62,6 +72,21 @@ void TreeElementOverridesBase::expand(SpaceOutliner &space_outliner) const
        * RNA/IDProps etc., this gets cleaned up when re-generating the overrides rules,
        * no error here. */
       continue;
+    }
+    if (!show_system_overrides && override_prop->rna_prop_type == PROP_POINTER &&
+        RNA_struct_is_ID(RNA_property_pointer_type(&override_rna_ptr, override_rna_prop))) {
+      bool do_continue = true;
+      for (auto *override_prop_op :
+           ListBaseWrapper<IDOverrideLibraryPropertyOperation>(override_prop->operations)) {
+        if ((override_prop_op->flag & IDOVERRIDE_LIBRARY_FLAG_IDPOINTER_MATCH_REFERENCE) == 0) {
+          do_continue = false;
+          break;
+        }
+      }
+
+      if (do_continue) {
+        continue;
+      }
     }
 
     TreeElementOverridesData data = {id_, *override_prop};
