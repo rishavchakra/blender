@@ -1000,6 +1000,7 @@ void BKE_nodetree_remove_layer_n(struct bNodeTree *ntree,
 #define SH_NODE_TEX_MAGIC 148
 #define SH_NODE_TEX_WAVE 149
 #define SH_NODE_TEX_NOISE 150
+#define SH_NODE_TEX_GABOR 151
 #define SH_NODE_TEX_MUSGRAVE 152
 #define SH_NODE_TEX_COORD 155
 #define SH_NODE_ADD_SHADER 156

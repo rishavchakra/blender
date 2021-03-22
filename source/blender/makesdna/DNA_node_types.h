@@ -940,6 +940,10 @@ typedef struct NodeTexMagic {
   char _pad[4];
 } NodeTexMagic;
 
+typedef struct NodeTexGabor {
+  NodeTexBase base;
+}
+
 typedef struct NodeShaderAttribute {
   char name[64];
   int type;
