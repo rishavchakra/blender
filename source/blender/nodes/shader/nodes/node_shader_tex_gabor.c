@@ -68,6 +68,7 @@ static void node_shader_update_tex_gabor(bNodeTree *UNUSED(ntree), bNode *node)
   nodeSetSocketAvailability(sockW, tex->dimensions == 1 || tex->dimensions == 4);
 }
 
+/* node type definition */
 void register_node_type_sh_tex_gabor(void)
 {
   static bNodeType ntype;
