@@ -73,6 +73,7 @@ void register_node_type_tex_proc_musgrave(void);
 void register_node_type_tex_proc_noise(void);
 void register_node_type_tex_proc_stucci(void);
 void register_node_type_tex_proc_distnoise(void);
+void register_node_type_tex_proc_gabor(void);
 
 #ifdef __cplusplus
 }
