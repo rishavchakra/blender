@@ -812,6 +812,9 @@ bool BKE_lib_override_library_create(
   BKE_main_id_clear_newpoins(bmain);
   BKE_main_id_tag_all(bmain, LIB_TAG_DOIT, false);
 
+  /* We need to rebuild some of the deleted override rules (for UI feedback purpose). */
+  BKE_lib_override_library_main_operations_create(bmain, true);
+
   return success;
 }
 
@@ -905,7 +908,7 @@ bool BKE_lib_override_library_resync(Main *bmain,
            * anymore. Check if there are some actual overrides from the user, otherwise assume
            * that we can get rid of this local override. */
           LISTBASE_FOREACH (IDOverrideLibraryProperty *, op, &id->override_library->properties) {
-            if (op->rna_prop_type != PROP_POINTER) {
+            if (!ELEM(op->rna_prop_type, PROP_POINTER, PROP_COLLECTION)) {
               id->override_library->reference->tag |= LIB_TAG_DOIT;
               break;
             }
@@ -1094,6 +1097,9 @@ bool BKE_lib_override_library_resync(Main *bmain,
 
   BKE_main_id_clear_newpoins(bmain);
   BKE_main_id_tag_all(bmain, LIB_TAG_DOIT, false); /* That one should not be needed in fact. */
+
+  /* We need to rebuild some of the deleted override rules (for UI feedback purpose). */
+  BKE_lib_override_library_main_operations_create(bmain, true);
 
   return success;
 }
